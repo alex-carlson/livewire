@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+    <head>
+
+    <!-- forecast.io json url : https://api.forecast.io/forecast/APIKEY/LATITUDE,LONGITUDE -->
+        <title>Test</title>
+        <audio id="audio" autoplay loop>
+          <source src="">
+        </audio>
+        <meta http-equiv="refresh" content="8400">
+        <style>
+            img{
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .weather{
+                z-index: 1;
+                font-size: 60px;
+                color: white;
+                position: absolute;
+                text-align: center;
+                width: 100%;
+            }
+        </style>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script>
+
+            var lat;
+            var lon;
+
+            function showlocation() {
+               // One-shot position request.
+               navigator.geolocation.getCurrentPosition(callback);
+            }
+             
+            function callback(position) {
+               lat = position.coords.latitude;
+               lon = position.coords.longitude;
+               console.log(position.coords.latitude);
+               console.log(position.coords.longitude);
+               $.ajax({
+                    url: 'https://api.forecast.io/forecast/67f887f4881c8be5d75f592282ebdf6e/'+lat+','+lon,
+                    dataType: 'jsonp',
+                    success: function(data){
+                        $(".data").append(data.currently);
+                        $("#temp").append(data.currently.temperature);
+                        $("#freq").append(data.currently.temperature * 10);
+                        frequency = data.currently.temperature * 10;
+                        if(data.currently.icon == "clear-day" || data.currently.icon == "clear-night"){
+                            console.log("Clear");
+                            $("#audio").attr("src", "birds.mp3");
+                            $(".weather").text("Clear Skies");
+                            $(".weatherImage").attr("src", "sunny.jpg");
+                        } else if(data.currently.icon == "partly-cloudy-day" || data.currently.icon == "partly-cloudy-night"){
+                            console.log("Kinda Cloudy");
+                            $("#audio").attr("src", "wind.wav");
+                            $(".weatherImage").attr("src", "partcloudy.jpg");
+                        } else if(data.currently.icon == "cloudy"){
+                            console.log("Cloudy");
+                            $("#audio").attr("src", "thunder.mp3");
+                            $(".weatherImage").attr("src", "cloudy.jpeg");
+                        }
+                    }
+                });
+            }
+
+            function loadData(){
+
+
+                $.ajax({
+                    url: 'https://api.forecast.io/forecast/67f887f4881c8be5d75f592282ebdf6e/'+lat+','+lon,
+                    dataType: 'jsonp',
+                    success: function(data){
+                        $(".data").append(data.currently);
+                        $("#temp").append(data.currently.temperature);
+                        $("#freq").append(data.currently.temperature * 10);
+                        frequency = data.currently.temperature * 10;
+                        if(data.currently.icon == "clear-day" || data.currently.icon == "clear-night"){
+                            console.log("Clear");
+                            $("#audio").attr("src", "birds.mp3");
+                            $(".weather").text("Clear Skies");
+                            $(".weatherImage").attr("src", "sunny.jpg");
+                        } else if(data.currently.icon == "partly-cloudy-day" || data.currently.icon == "partly-cloudy-night"){
+                            console.log("Kinda Cloudy");
+                            $("#audio").attr("src", "wind.wav");
+                            $(".weatherImage").attr("src", "partcloudy.jpg");
+                        } else if(data.currently.icon == "cloudy"){
+                            console.log("Cloudy");
+                            $("#audio").attr("src", "thunder.mp3");
+                            $(".weatherImage").attr("src", "cloudy.jpeg");
+                        }
+                    }
+                });
+                console.log('https://api.forecast.io/forecast/67f887f4881c8be5d75f592282ebdf6e/'+lat+','+lon);
+            }
+
+            // function startOSC(){
+
+            //     var context = new webkitAudioContext(); // Create audio container
+
+            //     // Create OscillatorNode
+            //     oscillator = context.createOscillator(); // Create sound source
+            //     oscillator.type = waveType; // wave type
+            //     oscillator.frequency.value = frequency; // Frequency in hertz (passed from input button)
+            //     oscillator.start(context.currentTime);
+
+            //     // Create GainNode    
+            //     gain = context.createGain(); // Create gain node
+            //     gain.gain.value = 0; // Set gain to full volume
+            //     gain.gain.setTargetAtTime(100, 0, 2);
+
+
+            //     // Connect the Nodes
+            //     oscillator.connect(gain); // Connect oscillator to gain
+            //     gain.connect(context.destination); // Connect gain to output
+            // };
+
+            $(document).ready(function(){
+                showlocation();
+                // startOSC();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="weather"></div>
+        <img class="weatherImage" src="">
+    </body>
+</html>
